@@ -2,9 +2,11 @@ param(
 	[bool]$privateStore = $false 
 )
 
+$storeWorkingDir=".\store-workingdir"
 Write-Host "Cleaning old artifacts..."
-rd .\bin -Recurse
-rd .\obj -Recurse
+Remove-Item .\bin -Recurse -ErrorAction Ignore
+Remove-Item .\obj -Recurse -ErrorAction Ignore
+Remove-Item $storeWorkingDir -Recurse -ErrorAction Ignore
 Write-Host
 
 Write-Host "CLI version: "
@@ -16,11 +18,12 @@ dotnet restore
 Write-Host
 
 Write-Host "Creating store...`n"
+$createStoreCmd="dotnet store --manifest appusingstore.csproj -c release -r win7-x64 -w $storeWorkingDir --preserve-working-dir"
 if ($privateStore) {
-    dotnet store --manifest app.csproj -c release -r win7-x64 -o .\mystore
+    Invoke-Expression "$createStoreCmd -o .\mystore"
 }
 else {
-    dotnet store --manifest app.csproj -c release -r win7-x64
+    Invoke-Expression $createStoreCmd
 }
 Write-Host
 
@@ -41,6 +44,6 @@ if([System.IO.File]::Exists("$publishFolder\Microsoft.AspNetCore.Mvc.Core.dll"))
 Write-Host
 
 Write-Host "Running app...`n"
-dotnet "$publishFolder\app.dll"
+dotnet "$publishFolder\appusingstore.dll"
 Write-Host
 
