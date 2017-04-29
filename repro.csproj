@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>aspnet-repro-ED1154D0-97BF-4857-B856-D7A5A453F872</UserSecretsId>
+    <RuntimeIdentifiers>win7-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0-preview1-24647" />
+  </ItemGroup>
+
+  <Target Name="SetupDotnetStore" BeforeTargets="Publish">
+    <Message Text="Setting up dotnet store for ASP.NET Core..." Importance="High" />
+
+    <Exec Command="dotnet store --manifest &quot;$(MSBuildProjectFullPath)&quot; -c $(Configuration) -r win7-x64" />
+  </Target>
+
+</Project>
