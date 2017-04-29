@@ -3,13 +3,8 @@ param(
 )
 Write-Host $PSScriptRoot
 
-$storeWorkingDir=".\store-workingdir"
-$customStore=".\mystore"
-Write-Host "Cleaning old artifacts..."
-# Remove-Item .\bin -Recurse -ErrorAction Ignore
-# Remove-Item .\obj -Recurse -ErrorAction Ignore
-# Remove-Item $storeWorkingDir -Recurse -ErrorAction Ignore
-Remove-Item .\bin, .\obj, $storeWorkingDir, $customStore -Recurse -ErrorAction Ignore
+Write-Host "`nCleaning old artifacts..."
+Remove-Item .\bin, .\obj, .\store-workingdir, .\mystore -Recurse -ErrorAction Ignore
 Write-Host
 
 Write-Host "CLI version: "
@@ -21,7 +16,7 @@ dotnet restore
 Write-Host
 
 Write-Host "Creating store...`n"
-$createStoreCmd="dotnet store --manifest appusingstore.csproj -c release -r win7-x64 -w $storeWorkingDir --preserve-working-dir"
+$createStoreCmd="dotnet store --manifest appusingstore.csproj -c release -r win7-x64 -w .\store-workingdir --preserve-working-dir"
 if ($privateStore) {
     Invoke-Expression "$createStoreCmd -o .\mystore"
     $env:DOTNET_SHARED_STORE="$PSScriptRoot\mystore"
@@ -33,11 +28,12 @@ Write-Host
 
 Write-Host "Publishing packages...`n"
 if ($privateStore) {
-    dotnet publish -c release --manifest .\mystore\x64\netcoreapp2.0\artifact.xml
+    $manifestXml=".\mystore\x64\netcoreapp2.0\artifact.xml"
 }
 else {
-    dotnet publish -c release --manifest $env:USERPROFILE\.dotnet\x64\store\netcoreapp2.0\artifact.xml
+    $manifestXml="$env:USERPROFILE\.dotnet\x64\store\netcoreapp2.0\artifact.xml"
 }
+dotnet publish -c release --manifest $manifestXml
 Write-Host
 
 $publishFolder="bin\release\netcoreapp2.0\publish\"
