@@ -50,9 +50,10 @@ if ($LASTEXITCODE -ne 0){
     exit $LASTEXITCODE
 }
 
-$publishFolder="bin\release\netcoreapp2.0\publish\"
+$publishFolder=[io.path]::combine($PSScriptRoot, "bin", "release", "netcoreapp2.0", "publish")
+$mvcCoreDll=[io.path]::combine($publishFolder, "Microsoft.AspNetCore.Mvc.Core.dll")
 Write-Host "Verifying ASP.NET Core dlls are NOT in published folder... "
-if([System.IO.File]::Exists("$publishFolder\Microsoft.AspNetCore.Mvc.Core.dll")){
+if([System.IO.File]::Exists($mvcCoreDll)){
    throw "ASP.NET Core dlls are present in the published folder. This is not expected." 
 }
 Write-Host
