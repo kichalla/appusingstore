@@ -1,7 +1,6 @@
 param(
 	[bool]$privateStore = $false 
 )
-Write-Host $PSScriptRoot
 
 $store=[io.path]::combine($env:TEMP, "appusingstore-store")
 $storeWorkingDir=[io.path]::combine($env:TEMP, "appusingstore-storeworkingdir")
