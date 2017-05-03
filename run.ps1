@@ -17,6 +17,10 @@ Write-Host "Restoring packages...`n"
 dotnet restore
 Write-Host
 
+if ($LASTEXITCODE -ne 0){
+    exit $LASTEXITCODE
+}
+
 Write-Host "Creating store...`n"
 $createStoreCmd="dotnet store --manifest appusingstore.csproj -c release -r win7-x64 -w $storeWorkingDir --preserve-working-dir"
 if ($privateStore) {
@@ -28,6 +32,10 @@ else {
 }
 Write-Host
 
+if ($LASTEXITCODE -ne 0){
+    exit $LASTEXITCODE
+}
+
 Write-Host "Publishing packages...`n"
 if ($privateStore) {
     $manifestXml="$store\x64\netcoreapp2.0\artifact.xml"
@@ -37,6 +45,10 @@ else {
 }
 dotnet publish -c release --manifest $manifestXml
 Write-Host
+
+if ($LASTEXITCODE -ne 0){
+    exit $LASTEXITCODE
+}
 
 $publishFolder="bin\release\netcoreapp2.0\publish\"
 Write-Host "Verifying ASP.NET Core dlls are NOT in published folder... "
