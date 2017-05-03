@@ -22,6 +22,8 @@ if ($LASTEXITCODE -ne 0){
 
 Write-Host "Creating store...`n"
 $createStoreCmd="dotnet store --manifest appusingstore.csproj -c release -r win7-x64 -w $storeWorkingDir --preserve-working-dir"
+$env:DOTNET_SHARED_STORE=""
+
 if ($privateStore) {
     Invoke-Expression "$createStoreCmd -o $store"
     $env:DOTNET_SHARED_STORE=$store
